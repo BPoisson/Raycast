@@ -20,8 +20,10 @@ public:
 	void HandleEvents();
 	const MouseState& GetMouseState() const;
 	bool GetQuitRequested();
-	bool GetMouseButtonDown();
-	bool GetPrevMouseButtonDown();
+	bool GetLeftMouseButtonDown();
+	bool GetRightMouseButtonDown();
+	bool GetLeftPrevMouseButtonDown();
+	bool GetRightPrevMouseButtonDown();
 	float GetMouseX();
 	float GetMouseY();
 

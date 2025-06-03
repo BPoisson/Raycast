@@ -7,8 +7,6 @@ Engine::~Engine() {
 	Clean();
 }
 
-bool prevFrameMouseDown = false;
-
 bool Engine::Init(const char* title, int width, int height) {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n";
@@ -50,8 +48,8 @@ void Engine::HandleInput() {
         return;
     }
     
-    if (inputHandler->GetMouseButtonDown()) {
-        if (!inputHandler->GetPrevMouseButtonDown()) {
+    if (inputHandler->GetLeftMouseButtonDown()) {
+        if (!inputHandler->GetLeftPrevMouseButtonDown()) {
             // Starting a new box.
             float x = inputHandler->GetMouseState().x;
             float y = inputHandler->GetMouseState().y;
@@ -63,7 +61,6 @@ void Engine::HandleInput() {
             rect.h = 0;
 
             rects.push_back(rect);
-            prevFrameMouseDown = true;
         } else if (!rects.empty()) {
             // Resizing an existing box.
             float x = inputHandler->GetMouseState().x;
@@ -72,7 +69,27 @@ void Engine::HandleInput() {
 
             rect->w = x - rect->x;
             rect->h = y - rect->y;
-            prevFrameMouseDown = true;
+
+            std::cout << rect->x << ", " << rect->y << " : " << rect->w << " " << rect->h << "\n";
+        }
+    }
+    if (inputHandler->GetRightMouseButtonDown()) {
+        if (!inputHandler->GetRightPrevMouseButtonDown()) {
+            float mouseX = inputHandler->GetMouseState().x;
+            float mouseY = inputHandler->GetMouseState().y;
+
+            for (int i = static_cast<int>(rects.size()) - 1; i >= 0; i--) {
+                SDL_FRect rect = rects.at(i);
+                float rectStartX = rect.w >= 0 ? rect.x : rect.x + rect.w;
+                float rectStartY = rect.h >= 0 ? rect.y : rect.y + rect.h;
+                float rectEndX = rect.w >= 0 ? rect.x + rect.w : rect.x;
+                float rectEndY = rect.h >= 0 ? rect.y + rect.h : rect.y;
+
+                if (rectStartX <= mouseX && mouseX <= rectEndX && rectStartY <= mouseY && mouseY <= rectEndY) {
+                    rects.erase(rects.begin() + i);
+                    break;
+                }
+            }
         }
     }
 }
@@ -82,10 +99,7 @@ void Engine::Render() {
     SDL_RenderClear(renderer);
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-    for (SDL_FRect rect : rects) {
-        SDL_RenderRect(renderer, &rect);
-    }
+    SDL_RenderFillRects(renderer, rects.data(), static_cast<int>(rects.size()));
 
     SDL_RenderPresent(renderer);
 }

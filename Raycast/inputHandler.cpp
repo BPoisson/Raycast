@@ -7,18 +7,10 @@ InputHandler::InputHandler() : quitRequested(false) {
 
 InputHandler::~InputHandler() {}
 
-//struct MouseState {
-//    bool leftDown = false;
-//    bool rightDown = false;
-//    int x = 0;
-//    int y = 0;
-//    int deltaX = 0;
-//    int deltaY = 0;
-//};
-
 void InputHandler::HandleEvents() {
     SDL_Event event;
     bool prevLeftDown = mouseState.leftDown;
+    bool prevRightDown = mouseState.rightDown;
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -27,14 +19,16 @@ void InputHandler::HandleEvents() {
                 break;
             case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    
                     mouseState.leftDown = true;
+                } else if (event.button.button == SDL_BUTTON_RIGHT) {
+                    mouseState.rightDown = true;
                 }
                 break;
             case SDL_EVENT_MOUSE_BUTTON_UP:
                 if (event.button.button == SDL_BUTTON_LEFT) {
-
                     mouseState.leftDown = false;
+                } else if (event.button.button == SDL_BUTTON_RIGHT) {
+                    mouseState.rightDown = false;
                 }
                 break;
             case SDL_EVENT_MOUSE_MOTION:
@@ -48,6 +42,7 @@ void InputHandler::HandleEvents() {
         }
     }
     mouseState.prevLeftDown = prevLeftDown;
+    mouseState.prevRightDown = prevRightDown;
 }
 
 const MouseState& InputHandler::GetMouseState() const {
@@ -58,12 +53,20 @@ bool InputHandler::GetQuitRequested() {
     return quitRequested;
 }
 
-bool InputHandler::GetMouseButtonDown() {
+bool InputHandler::GetLeftMouseButtonDown() {
     return mouseState.leftDown;
 }
 
-bool InputHandler::GetPrevMouseButtonDown() {
+bool InputHandler::GetRightMouseButtonDown() {
+    return mouseState.rightDown;
+}
+
+bool InputHandler::GetLeftPrevMouseButtonDown() {
     return mouseState.prevLeftDown;
+}
+
+bool InputHandler::GetRightPrevMouseButtonDown() {
+    return mouseState.prevRightDown;
 }
 
 float InputHandler::GetMouseX() {
