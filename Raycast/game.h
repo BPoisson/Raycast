@@ -3,7 +3,9 @@
 
 #include <SDL3/SDL.h>
 #include <vector>
+#include <unordered_set>
 #include "engine.h"
+#include "player.h"
 #include "obstacle.h"
 
 class Game {
@@ -12,7 +14,9 @@ public:
 	~Game();
 
 	bool isRunning;
-	std::vector<Renderable*> obstacles;
+	Player* player;
+	std::vector<Obstacle*> obstacles;
+	std::unordered_set<Renderable*> renderables;	// We might care about render order later. Switch to ECS?
 
 	bool Init(const char* title, int width, int height);
 	void Run();
@@ -22,6 +26,8 @@ private:
 
 	void Update();
 	void HandleInput();
+	void HandleMouseInput();
+	void HandleKeyboardInput();
 	void Clean();
 };
 

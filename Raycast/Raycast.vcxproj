@@ -135,12 +135,14 @@
     <ClCompile Include="inputHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="obstacle.cpp" />
+    <ClCompile Include="player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="inputHandler.h" />
     <ClInclude Include="obstacle.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="renderable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

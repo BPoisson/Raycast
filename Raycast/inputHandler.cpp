@@ -3,6 +3,7 @@
 
 InputHandler::InputHandler() : quitRequested(false) {
     mouseState = {};
+    keyState = {};
 }
 
 InputHandler::~InputHandler() {}
@@ -37,16 +38,72 @@ void InputHandler::HandleEvents() {
                 mouseState.deltaX = event.motion.xrel;
                 mouseState.deltaY = event.motion.yrel;
                 break;
+            case SDL_EVENT_KEY_DOWN:
+                switch (event.key.scancode) {
+                    case SDL_SCANCODE_W:
+                        keyState.wDown = true;
+                        break;
+                    case SDL_SCANCODE_A:
+                        keyState.aDown = true;
+                        break;
+                    case SDL_SCANCODE_S:
+                        keyState.sDown = true;
+                        break;
+                    case SDL_SCANCODE_D:
+                        keyState.dDown = true;
+                        break;
+                    case SDL_SCANCODE_UP:
+                        keyState.upDown = true;
+                        break;
+                    case SDL_SCANCODE_DOWN:
+                        keyState.downDown = true;
+                        break;
+                    case SDL_SCANCODE_LEFT:
+                        keyState.leftDown = true;
+                        break;
+                    case SDL_SCANCODE_RIGHT:
+                        keyState.rightDown = true;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case SDL_EVENT_KEY_UP:
+                switch (event.key.scancode) {
+                    case SDL_SCANCODE_W:
+                        keyState.wDown = false;
+                        break;
+                    case SDL_SCANCODE_A:
+                        keyState.aDown = false;
+                        break;
+                    case SDL_SCANCODE_S:
+                        keyState.sDown = false;
+                        break;
+                    case SDL_SCANCODE_D:
+                        keyState.dDown = false;
+                        break;
+                    case SDL_SCANCODE_UP:
+                        keyState.upDown = false;
+                        break;
+                    case SDL_SCANCODE_DOWN:
+                        keyState.downDown = false;
+                        break;
+                    case SDL_SCANCODE_LEFT:
+                        keyState.leftDown = false;
+                        break;
+                    case SDL_SCANCODE_RIGHT:
+                        keyState.rightDown = false;
+                        break;
+                    default:
+                        break;
+                }
+                break;
             default:
                 break;
         }
     }
     mouseState.prevLeftDown = prevLeftDown;
     mouseState.prevRightDown = prevRightDown;
-}
-
-const MouseState& InputHandler::GetMouseState() const {
-    return mouseState;
 }
 
 bool InputHandler::GetQuitRequested() {
@@ -75,4 +132,36 @@ float InputHandler::GetMouseX() {
 
 float InputHandler::GetMouseY() {
     return mouseState.y;
+}
+
+bool InputHandler::GetWKeyDown() {
+    return keyState.wDown;
+}
+
+bool InputHandler::GetAKeyDown() {
+    return keyState.aDown;
+}
+
+bool InputHandler::GetSKeyDown() {
+    return keyState.sDown;
+}
+
+bool InputHandler::GetDKeyDown() {
+    return keyState.dDown;
+}
+
+bool InputHandler::GetUpKeyDown() {
+    return keyState.upDown;
+}
+
+bool InputHandler::GetDownKeyDown() {
+    return keyState.downDown;
+}
+
+bool InputHandler::GetLeftKeyDown() {
+    return keyState.leftDown;
+}
+
+bool InputHandler::GetRightKeyDown() {
+    return keyState.rightDown;
 }

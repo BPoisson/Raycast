@@ -12,13 +12,26 @@ struct MouseState {
 	float deltaY = 0;
 };
 
+struct KeyState {
+	// WASD keys.
+	bool wDown = false;
+	bool aDown = false;
+	bool sDown = false;
+	bool dDown = false;
+
+	// Arrow keys.
+	bool upDown = false;
+	bool downDown = false;
+	bool leftDown = false;
+	bool rightDown = false;
+};
+
 class InputHandler {
 public:
 	InputHandler();
 	~InputHandler();
 
 	void HandleEvents();
-	const MouseState& GetMouseState() const;
 	bool GetQuitRequested();
 	bool GetLeftMouseButtonDown();
 	bool GetRightMouseButtonDown();
@@ -27,9 +40,19 @@ public:
 	float GetMouseX();
 	float GetMouseY();
 
+	bool GetWKeyDown();
+	bool GetAKeyDown();
+	bool GetSKeyDown();
+	bool GetDKeyDown();
+	bool GetUpKeyDown();
+	bool GetDownKeyDown();
+	bool GetLeftKeyDown();
+	bool GetRightKeyDown();
+
 private:
 	bool quitRequested;
 	MouseState mouseState;
+	KeyState keyState;
 };
 
 #endif

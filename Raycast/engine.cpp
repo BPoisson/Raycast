@@ -34,7 +34,7 @@ void Engine::Update() {
     inputHandler->HandleEvents();
 }
 
-void Engine::Render(std::vector<Renderable*>& renderables) {
+void Engine::Render(std::unordered_set<Renderable*>& renderables) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
@@ -71,6 +71,38 @@ float Engine::GetMouseX() const {
 
 float Engine::GetMouseY() const {
     return inputHandler->GetMouseY();
+}
+
+bool Engine::GetWKeyDown() {
+    return inputHandler->GetWKeyDown();
+}
+
+bool Engine::GetAKeyDown() {
+    return inputHandler->GetAKeyDown();
+}
+
+bool Engine::GetSKeyDown() {
+    return inputHandler->GetSKeyDown();
+}
+
+bool Engine::GetDKeyDown() {
+    return inputHandler->GetDKeyDown();
+}
+
+bool Engine::GetUpKeyDown() {
+    return inputHandler->GetUpKeyDown();
+}
+
+bool Engine::GetDownKeyDown() {
+    return inputHandler->GetDownKeyDown();
+}
+
+bool Engine::GetLeftKeyDown() {
+    return inputHandler->GetLeftKeyDown();
+}
+
+bool Engine::GetRightKeyDown() {
+    return inputHandler->GetRightKeyDown();
 }
 
 void Engine::Quit() {

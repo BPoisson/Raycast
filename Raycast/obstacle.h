@@ -9,7 +9,7 @@ public:
 	~Obstacle() = default;
 
 	SDL_FRect rect;
-	SDL_Color color = SDL_Color { 255, 255, 255, 255 };
+	SDL_Color color = SDL_Color{ 255, 255, 255, 255 };
 
 	void Render(SDL_Renderer* renderer) const override;
 };
