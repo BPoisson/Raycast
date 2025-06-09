@@ -4,6 +4,7 @@
 #include <SDL3/SDL.h>
 #include <vector>
 #include "engine.h"
+#include "obstacle.h"
 
 class Game {
 public:
@@ -11,7 +12,7 @@ public:
 	~Game();
 
 	bool isRunning;
-	std::vector<SDL_FRect> obstacles;
+	std::vector<Renderable*> obstacles;
 
 	bool Init(const char* title, int width, int height);
 	void Run();

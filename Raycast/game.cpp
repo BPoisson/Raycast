@@ -46,12 +46,12 @@ void Game::HandleInput() {
             rect.w = 0;
             rect.h = 0;
 
-            obstacles.push_back(rect);
+            obstacles.push_back(new Obstacle(rect));
         } else if (!obstacles.empty()) {
             // Resizing an existing box.
             float x = engine.GetMouseX();
             float y = engine.GetMouseY();
-            SDL_FRect* rect = &obstacles.at(obstacles.size() - 1);
+            SDL_FRect* rect = &static_cast<Obstacle*>(obstacles.back())->rect;
 
             rect->w = x - rect->x;
             rect->h = y - rect->y;
@@ -63,13 +63,14 @@ void Game::HandleInput() {
             float mouseY = engine.GetMouseY();
 
             for (int i = static_cast<int>(obstacles.size()) - 1; i >= 0; i--) {
-                SDL_FRect rect = obstacles.at(i);
+                SDL_FRect rect = static_cast<Obstacle*>(obstacles.at(i))->rect;
                 float rectStartX = rect.w >= 0 ? rect.x : rect.x + rect.w;
                 float rectStartY = rect.h >= 0 ? rect.y : rect.y + rect.h;
                 float rectEndX = rect.w >= 0 ? rect.x + rect.w : rect.x;
                 float rectEndY = rect.h >= 0 ? rect.y + rect.h : rect.y;
 
                 if (rectStartX <= mouseX && mouseX <= rectEndX && rectStartY <= mouseY && mouseY <= rectEndY) {
+                    delete obstacles[i];
                     obstacles.erase(obstacles.begin() + i);
                     break;
                 }

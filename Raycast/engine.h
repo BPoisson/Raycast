@@ -1,9 +1,10 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "inputHandler.h"
 #include <SDL3/SDL.h>
 #include <vector>
+#include "inputHandler.h"
+#include "renderable.h"
 
 class Engine {
 public:
@@ -13,7 +14,7 @@ public:
 	bool Init(const char* title, int width, int height);
 
 	void Update();
-	void Render(std::vector<SDL_FRect>& obstacles);
+	void Render(std::vector<Renderable*>& renderables);
 
 	bool GetQuitRequested() const;
 	bool GetLeftMouseButtonDown() const;

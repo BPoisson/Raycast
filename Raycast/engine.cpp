@@ -34,12 +34,13 @@ void Engine::Update() {
     inputHandler->HandleEvents();
 }
 
-void Engine::Render(std::vector<SDL_FRect>& obstacles) {
+void Engine::Render(std::vector<Renderable*>& renderables) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderFillRects(renderer, obstacles.data(), static_cast<int>(obstacles.size()));
+    for (const auto& renderable : renderables) {
+        renderable->Render(renderer);
+    }
 
     SDL_RenderPresent(renderer);
 }
