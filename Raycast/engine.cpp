@@ -30,78 +30,51 @@ bool Engine::Init(const char* title, int width, int height) {
     return true;
 }
 
-void Engine::Run() {
-    while (isRunning) {
-        inputHandler->HandleEvents();
-        Update();
-        Render();
-    }
-}
-
 void Engine::Update() {
-    HandleInput();
+    inputHandler->HandleEvents();
 }
 
-void Engine::HandleInput() {
-    if (inputHandler->GetQuitRequested()) {
-        isRunning = false;
-        return;
-    }
-    
-    if (inputHandler->GetLeftMouseButtonDown()) {
-        if (!inputHandler->GetLeftPrevMouseButtonDown()) {
-            // Starting a new box.
-            float x = inputHandler->GetMouseState().x;
-            float y = inputHandler->GetMouseState().y;
-            SDL_FRect rect;
-
-            rect.x = x;
-            rect.y = y;
-            rect.w = 0;
-            rect.h = 0;
-
-            rects.push_back(rect);
-        } else if (!rects.empty()) {
-            // Resizing an existing box.
-            float x = inputHandler->GetMouseState().x;
-            float y = inputHandler->GetMouseState().y;
-            SDL_FRect* rect = &rects.at(rects.size() - 1);
-
-            rect->w = x - rect->x;
-            rect->h = y - rect->y;
-
-            std::cout << rect->x << ", " << rect->y << " : " << rect->w << " " << rect->h << "\n";
-        }
-    }
-    if (inputHandler->GetRightMouseButtonDown()) {
-        if (!inputHandler->GetRightPrevMouseButtonDown()) {
-            float mouseX = inputHandler->GetMouseState().x;
-            float mouseY = inputHandler->GetMouseState().y;
-
-            for (int i = static_cast<int>(rects.size()) - 1; i >= 0; i--) {
-                SDL_FRect rect = rects.at(i);
-                float rectStartX = rect.w >= 0 ? rect.x : rect.x + rect.w;
-                float rectStartY = rect.h >= 0 ? rect.y : rect.y + rect.h;
-                float rectEndX = rect.w >= 0 ? rect.x + rect.w : rect.x;
-                float rectEndY = rect.h >= 0 ? rect.y + rect.h : rect.y;
-
-                if (rectStartX <= mouseX && mouseX <= rectEndX && rectStartY <= mouseY && mouseY <= rectEndY) {
-                    rects.erase(rects.begin() + i);
-                    break;
-                }
-            }
-        }
-    }
-}
-
-void Engine::Render() {
+void Engine::Render(std::vector<SDL_FRect>& obstacles) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderFillRects(renderer, rects.data(), static_cast<int>(rects.size()));
+    SDL_RenderFillRects(renderer, obstacles.data(), static_cast<int>(obstacles.size()));
 
     SDL_RenderPresent(renderer);
+}
+
+bool Engine::GetQuitRequested() const {
+    return inputHandler->GetQuitRequested();
+}
+
+bool Engine::GetLeftMouseButtonDown() const {
+    return inputHandler->GetLeftMouseButtonDown();
+}
+
+bool Engine::GetRightMouseButtonDown() const {
+    return inputHandler->GetRightMouseButtonDown();
+}
+
+bool Engine::GetLeftPrevMouseButtonDown() const {
+    return inputHandler->GetLeftPrevMouseButtonDown();
+}
+
+bool Engine::GetRightPrevMouseButtonDown() const {
+    return inputHandler->GetRightPrevMouseButtonDown();
+}
+
+float Engine::GetMouseX() const {
+    return inputHandler->GetMouseX();
+}
+
+float Engine::GetMouseY() const {
+    return inputHandler->GetMouseY();
+}
+
+void Engine::Quit() {
+    isRunning = false;
+    Clean();
 }
 
 void Engine::Clean() {

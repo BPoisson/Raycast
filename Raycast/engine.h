@@ -10,22 +10,29 @@ public:
 	Engine();
 	~Engine();
 
-	std::vector<SDL_FRect> rects;
-
 	bool Init(const char* title, int width, int height);
-	void Run();
-	void Clean();
+
+	void Update();
+	void Render(std::vector<SDL_FRect>& obstacles);
+
+	bool GetQuitRequested() const;
+	bool GetLeftMouseButtonDown() const;
+	bool GetRightMouseButtonDown() const;
+	bool GetLeftPrevMouseButtonDown() const;
+	bool GetRightPrevMouseButtonDown() const;
+	float GetMouseX() const;
+	float GetMouseY() const;
+
+	void Quit();
 
 private:
 	bool isRunning;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	InputHandler* inputHandler;
-	
 
 	void HandleInput();
-	void Update();
-	void Render();
+	void Clean();
 };
 
 #endif

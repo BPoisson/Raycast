@@ -1,12 +1,11 @@
-#include "engine.h"
+#include "game.h"
 
 int main() {
-	Engine engine;
-
-	if (!engine.Init("RayCaster", 2400, 1200)) {
+	Game game;
+	if (!game.Init("RayCaster", 2560, 1080)) {
 		return -1;
 	}
-	engine.Run();
+	game.Run();
 
 	return 0;
 }
