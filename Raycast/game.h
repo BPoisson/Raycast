@@ -14,7 +14,7 @@ public:
 	~Game();
 
 	bool isRunning;
-	Player* player;
+	Player player;
 	std::vector<Obstacle*> obstacles;
 	std::unordered_set<Renderable*> renderables;	// We might care about render order later. Switch to ECS?
 
@@ -24,7 +24,7 @@ public:
 private:
 	Engine engine;
 
-	void Update();
+	void Update(float deltaTime);
 	void HandleInput();
 	void HandleMouseInput();
 	void HandleKeyboardInput();

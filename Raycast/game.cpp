@@ -13,23 +13,34 @@ bool Game::Init(const char* title, int width, int height) {
     if (!engine.Init(title, width, height)) {
         return false;
     }
-    player = new Player();
+    player = Player();
     isRunning = true;
-    renderables.insert(player);
+    renderables.insert(&player);
     return true;
 }
 
 void Game::Run() {
+    Uint64 lastTime = SDL_GetPerformanceCounter();
+    float smoothedFPS = 0.0f;
+    
     while (isRunning) {
+        Uint64 currTime = SDL_GetPerformanceCounter();
+        float deltaTime = static_cast<float>(currTime - lastTime) / static_cast<float>(SDL_GetPerformanceFrequency());
+        lastTime = currTime;
+
         engine.Update();
-        Update();
+        Update(deltaTime);
+
+        float fps = 1.0f / deltaTime;
+        smoothedFPS = 0.9f * smoothedFPS + 0.1f * fps;
+        //std::cout << "FPS: " << smoothedFPS << "\n";
     }
     Clean();
 }
 
-void Game::Update() {
+void Game::Update(float deltaTime) {
     HandleInput();
-    player->Move();
+    player.Move(deltaTime);
     engine.Render(renderables);
 }
 
@@ -93,22 +104,26 @@ void Game::HandleKeyboardInput() {
     }
 
     if (engine.GetWKeyDown()) {
-        player->yDir = -1;
+        player.yDir = -1;
     } else if (engine.GetSKeyDown()) {
-        player->yDir = 1;
+        player.yDir = 1;
     } else {
-        player->yDir = 0;
+        player.yDir = 0;
     }
 
     if (engine.GetAKeyDown()) {
-        player->xDir = -1;
+        player.xDir = -1;
     } else if (engine.GetDKeyDown()) {
-        player->xDir = 1;
+        player.xDir = 1;
     } else {
-        player->xDir = 0;
+        player.xDir = 0;
     }
 }
 
 void Game::Clean() {
+    for (Obstacle* obstacle : obstacles) {
+        delete obstacle;
+    }
+    obstacles.clear();
     engine.Quit();
 }

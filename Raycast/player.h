@@ -14,7 +14,7 @@ public:
 	SDL_FRect rect;
 	SDL_Color color;
 
-	void Move();
+	void Move(float deltaTime);
 	void Render(SDL_Renderer* renderer) const override;
 
 private:
