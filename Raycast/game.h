@@ -13,7 +13,7 @@ public:
 	Game();
 	~Game();
 
-	bool isRunning;
+	bool isRunning = false;
 	Player player;
 	std::vector<Obstacle*> obstacles;
 	std::unordered_set<Renderable*> renderables;	// We might care about render order later. Switch to ECS?

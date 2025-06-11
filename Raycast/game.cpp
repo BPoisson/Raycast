@@ -1,21 +1,23 @@
 #include "game.h"
 #include <iostream>
 
-Game::Game() : isRunning(false) {};
+Game::Game() {}
 
 Game::~Game() {
     Clean();
 }
 
 bool Game::Init(const char* title, int width, int height) {
-    engine = Engine();
-
     if (!engine.Init(title, width, height)) {
         return false;
     }
-    player = Player();
+    player.Init(width);
     isRunning = true;
     renderables.insert(&player);
+    
+    for (Ray& ray : player.rays) {
+        renderables.insert(&ray);
+    }
     return true;
 }
 
@@ -40,7 +42,7 @@ void Game::Run() {
 
 void Game::Update(float deltaTime) {
     HandleInput();
-    player.Move(deltaTime);
+    player.Update(deltaTime);
     engine.Render(renderables);
 }
 
