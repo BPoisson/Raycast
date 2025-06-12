@@ -56,8 +56,11 @@
     <ClInclude Include="renderable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClCompile Include="ray.h">
+    <ClInclude Include="ray.h">
       <Filter>Header Files</Filter>
-    </ClCompile>
+    </ClInclude>
+    <ClInclude Include="dataStructures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
