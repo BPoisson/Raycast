@@ -123,6 +123,14 @@ void Game::HandleKeyboardInput() {
     } else {
         player.xDir = 0;
     }
+
+    if (engine.GetLeftKeyDown()) {
+        player.rayDir = -1;
+    } else if (engine.GetRightKeyDown()) {
+        player.rayDir = 1;
+    } else {
+        player.rayDir = 0;
+    }
 }
 
 void Game::Clean() {

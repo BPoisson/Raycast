@@ -12,6 +12,7 @@ public:
 	~Player() = default;
 	int xDir = 0;
 	int yDir = 0;
+	int rayDir = 0;
 	float angle = 0.0f;
 	const float rectDimension = 25.0f;
 	SDL_FRect rect{ 250, 250, rectDimension, rectDimension };
@@ -21,6 +22,7 @@ public:
 	void Init(int screenWidth);
 	void Update(float deltaTime);
 	void Move(float deltaTime);
+	void UpdateRayAngle(float deltaTime);
 	void UpdateRays();
 	void Render(SDL_Renderer* renderer) const override;
 

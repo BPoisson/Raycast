@@ -14,13 +14,14 @@ void Player::Init(int screenWidth) {
 
 void Player::Update(float deltaTime) {
 	Move(deltaTime);
+	UpdateRayAngle(deltaTime);
 	UpdateRays();	
 }
 
 void Player::UpdateRays() {
 	constexpr float PI = 3.14159265f;
 	float fieldOfView = 90.0f * (PI / 180.0f);
-	float startX = this->rect.x + this->rectDimension;
+	float startX = this->rect.x + this->rectDimension / 2;
 	float startY = this->rect.y + this->rectDimension / 2;
 
 	for (int i = 0; i < rays.size(); i++) {
@@ -34,6 +35,10 @@ void Player::UpdateRays() {
 void Player::Move(float deltaTime) {
 	rect.x += (xDir * speed * deltaTime);
 	rect.y += (yDir * speed * deltaTime);
+}
+
+void Player::UpdateRayAngle(float deltaTime) {
+	this->angle += (rayDir * deltaTime);
 }
 
 void Player::Render(SDL_Renderer* renderer) const {
