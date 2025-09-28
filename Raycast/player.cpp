@@ -12,8 +12,8 @@ void Player::Init(int screenWidth) {
 	}
 }
 
-void Player::Update(float deltaTime) {
-	Move(deltaTime);
+void Player::Update(float deltaTime, std::vector<Obstacle*> obstacles) {
+	Move(deltaTime, obstacles);
 	UpdateRayAngle(deltaTime);
 	UpdateRays();	
 }
@@ -32,9 +32,40 @@ void Player::UpdateRays() {
 	}
 }
 
-void Player::Move(float deltaTime) {
-	rect.x += (xDir * speed * deltaTime);
-	rect.y += (yDir * speed * deltaTime);
+void Player::Move(float deltaTime, std::vector<Obstacle*> obstacles) {
+	float nextX = this->rect.x + xDir * speed * deltaTime;
+	float nextY = this->rect.y + yDir * speed * deltaTime;
+
+	if (!CheckCollision(nextX, nextY, obstacles)) {
+		this->rect.x = nextX;
+		this->rect.y = nextY;
+	}
+}
+
+bool Player::CheckCollision(float nextX, float nextY, std::vector<Obstacle*> obstacles) {
+	for (Obstacle* obstacle : obstacles) {
+		if (isColliding(nextX, nextY, obstacle)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Player::isColliding(float nextX, float nextY, Obstacle* obstacle) {
+	float playerXStart = nextX;
+	float playerYStart = nextY;
+	float playerXEnd = nextX + this->rect.w;
+	float playerYEnd = nextY + this->rect.h;
+
+	float obstacleXStart = obstacle->rect.x;
+	float obstacleYStart = obstacle->rect.y;
+	float obstacleXEnd = obstacleXStart + obstacle->rect.w;
+	float obstacleYEnd = obstacleYStart + obstacle->rect.h;
+
+	bool xCollision = (obstacleXStart <= playerXEnd && playerXEnd <= obstacleXEnd) || (playerXStart <= obstacleXEnd && obstacleXEnd <= playerXEnd);
+	bool yCollision = (obstacleYStart <= playerYEnd && playerYEnd <= obstacleYEnd) || (playerYStart <= obstacleYEnd && obstacleYEnd <= playerYEnd);
+
+	return xCollision && yCollision;
 }
 
 void Player::UpdateRayAngle(float deltaTime) {

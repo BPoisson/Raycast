@@ -42,7 +42,7 @@ void Game::Run() {
 
 void Game::Update(float deltaTime) {
     HandleInput();
-    player.Update(deltaTime);
+    player.Update(deltaTime, obstacles);
     for (Ray& ray : player.rays) {
         ray.Update(obstacles);
     }

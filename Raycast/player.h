@@ -20,15 +20,17 @@ public:
 	std::vector<Ray> rays;
 
 	void Init(int screenWidth);
-	void Update(float deltaTime);
-	void Move(float deltaTime);
-	void UpdateRayAngle(float deltaTime);
-	void UpdateRays();
+	void Update(float deltaTime, std::vector<Obstacle*> obstacles);
 	void Render(SDL_Renderer* renderer) const override;
 
 private:
 	float speed = 250.0f;
 
+	void Move(float deltaTime, std::vector<Obstacle*> obstacles);
+	bool CheckCollision(float nextX, float nextY, std::vector<Obstacle*> obstacles);
+	bool isColliding(float nextX, float nextY, Obstacle* obstacle);
+	void UpdateRayAngle(float deltaTime);
+	void UpdateRays();
 	void Clean();
 };
 
