@@ -35,7 +35,7 @@ void Game::Run() {
 
         float fps = 1.0f / deltaTime;
         smoothedFPS = 0.9f * smoothedFPS + 0.1f * fps;
-        std::cout << "FPS: " << smoothedFPS << "\n";
+        //std::cout << "FPS: " << smoothedFPS << "\n";
     }
     Clean();
 }

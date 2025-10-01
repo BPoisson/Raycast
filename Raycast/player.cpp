@@ -36,22 +36,30 @@ void Player::Move(float deltaTime, std::vector<Obstacle*> obstacles) {
 	float nextX = this->rect.x + xDir * speed * deltaTime;
 	float nextY = this->rect.y + yDir * speed * deltaTime;
 
-	if (!CheckCollision(nextX, nextY, obstacles)) {
+	CollisionResult collisionResult = CheckCollision(nextX, nextY, obstacles);
+
+	if (!collisionResult.isColliding) {
 		this->rect.x = nextX;
 		this->rect.y = nextY;
+	} else {
+		this->rect.x = collisionResult.x;
+		this->rect.y = collisionResult.y;
 	}
 }
 
-bool Player::CheckCollision(float nextX, float nextY, std::vector<Obstacle*> obstacles) {
+CollisionResult Player::CheckCollision(float nextX, float nextY, std::vector<Obstacle*> obstacles) {
 	for (Obstacle* obstacle : obstacles) {
-		if (isColliding(nextX, nextY, obstacle)) {
-			return true;
+		CollisionResult collisionResult = isColliding(nextX, nextY, obstacle);
+
+		if (collisionResult.isColliding) {
+			return collisionResult;
 		}
 	}
-	return false;
+	return CollisionResult();
 }
 
-bool Player::isColliding(float nextX, float nextY, Obstacle* obstacle) {
+// TODO: Handle issues in diagonal movement between two nearby obstacles, allowing the player to pass through.
+CollisionResult Player::isColliding(float nextX, float nextY, Obstacle* obstacle) {
 	float playerXStart = nextX;
 	float playerYStart = nextY;
 	float playerXEnd = nextX + this->rect.w;
@@ -62,10 +70,40 @@ bool Player::isColliding(float nextX, float nextY, Obstacle* obstacle) {
 	float obstacleXEnd = obstacleXStart + obstacle->rect.w;
 	float obstacleYEnd = obstacleYStart + obstacle->rect.h;
 
-	bool xCollision = (obstacleXStart <= playerXEnd && playerXEnd <= obstacleXEnd) || (playerXStart <= obstacleXEnd && obstacleXEnd <= playerXEnd);
-	bool yCollision = (obstacleYStart <= playerYEnd && playerYEnd <= obstacleYEnd) || (playerYStart <= obstacleYEnd && obstacleYEnd <= playerYEnd);
+	bool xCollision = playerXStart < obstacleXEnd && obstacleXStart < playerXEnd;
+	bool yCollision = playerYStart < obstacleYEnd && obstacleYStart < playerYEnd;
 
-	return xCollision && yCollision;
+	if (!xCollision || !yCollision) {
+		return CollisionResult{};
+	}
+
+	float xOverlapLeft = playerXEnd - obstacleXStart;
+	float xOverlapRight = obstacleXEnd - playerXStart;
+	float yOverlapTop = playerYEnd - obstacleYStart;
+	float yOverlapBot = obstacleYEnd - playerYStart;
+
+	float minOverlapX = 0.0;
+	if (xOverlapLeft < xOverlapRight) {
+		minOverlapX = xOverlapLeft;
+	} else {
+		minOverlapX = -xOverlapRight;
+	}
+
+	float minOverlapY = 0.0;
+	if (yOverlapTop < yOverlapBot) {
+		minOverlapY = yOverlapTop;
+	} else {
+		minOverlapY = -yOverlapBot;
+	}
+
+	float xPos = nextX;
+	float yPos = nextY;
+	if (std::abs(minOverlapX) < std::abs(minOverlapY)) {
+		xPos = nextX - minOverlapX;
+	} else {
+		yPos = nextY - minOverlapY;
+	}
+	return CollisionResult { true, xPos, yPos };
 }
 
 void Player::UpdateRayAngle(float deltaTime) {

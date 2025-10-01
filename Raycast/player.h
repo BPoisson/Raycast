@@ -6,6 +6,12 @@
 #include <vector>
 #include <SDL3/SDL.h>
 
+struct CollisionResult {
+	bool isColliding = false;
+	float x = 0.0;
+	float y = 0.0;
+};
+
 class Player : public Renderable {
 public:
 	Player();
@@ -27,8 +33,8 @@ private:
 	float speed = 250.0f;
 
 	void Move(float deltaTime, std::vector<Obstacle*> obstacles);
-	bool CheckCollision(float nextX, float nextY, std::vector<Obstacle*> obstacles);
-	bool isColliding(float nextX, float nextY, Obstacle* obstacle);
+	CollisionResult CheckCollision(float nextX, float nextY, std::vector<Obstacle*> obstacles);
+	CollisionResult isColliding(float nextX, float nextY, Obstacle* obstacle);
 	void UpdateRayAngle(float deltaTime);
 	void UpdateRays();
 	void Clean();
