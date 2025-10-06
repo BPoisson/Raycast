@@ -12,6 +12,9 @@ bool Game::Init(const char* title, int width, int height) {
         return false;
     }
     player.Init(width);
+
+    screenWidth = width;
+    screenHeight = height;
     isRunning = true;
     renderables.insert(&player);
     
@@ -55,7 +58,7 @@ void Game::HandleInput() {
 }
 
 void Game::HandleMouseInput() {
-    if (engine.GetLeftMouseButtonDown()) {
+    if (engine.GetLeftMouseButtonDown() && engine.GetMouseX() < screenWidth / 2) {
         if (!engine.GetLeftPrevMouseButtonDown()) {
             // Starting a new box.
             float x = engine.GetMouseX();
@@ -72,7 +75,8 @@ void Game::HandleMouseInput() {
             renderables.insert(obstacle);
         } else if (!obstacles.empty()) {
             // Resizing an existing box.
-            float x = engine.GetMouseX();
+            // Ensure obstacle stays on left half of screen.
+            float x = std::min(screenWidth / 2.0f, engine.GetMouseX());
             float y = engine.GetMouseY();
             
             SDL_FRect* rect = &obstacles.back()->rect;

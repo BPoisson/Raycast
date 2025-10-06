@@ -19,6 +19,7 @@ public:
 	int xDir = 0;
 	int yDir = 0;
 	int rayDir = 0;
+	int screenWidth = 0;
 	float angle = 0.0f;
 	const float rectDimension = 25.0f;
 	SDL_FRect rect{ 250, 250, rectDimension, rectDimension };

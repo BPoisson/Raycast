@@ -3,11 +3,12 @@
 
 Player::Player() {}
 
-void Player::Init(int screenWidth) {
+void Player::Init(int width) {
+	screenWidth = width;
 	float startX = this->rect.x + this->rectDimension;
 	float startY = this->rect.y + this->rectDimension / 2;
 
-	for (int i = 0; i < screenWidth; i++) {
+	for (int i = 0; i < screenWidth / 2; i++) {
 		rays.push_back(Ray(startX, startY, 0.0f));
 	}
 }
@@ -33,7 +34,7 @@ void Player::UpdateRays() {
 }
 
 void Player::Move(float deltaTime, std::vector<Obstacle*> obstacles) {
-	float nextX = this->rect.x + xDir * speed * deltaTime;
+	float nextX = std::min(screenWidth / 2.0f - this->rect.w, this->rect.x + xDir * speed * deltaTime);
 	float nextY = this->rect.y + yDir * speed * deltaTime;
 
 	CollisionResult collisionResult = CheckCollision(nextX, nextY, obstacles);
@@ -55,7 +56,7 @@ CollisionResult Player::CheckCollision(float nextX, float nextY, std::vector<Obs
 			return collisionResult;
 		}
 	}
-	return CollisionResult();
+	return CollisionResult{};
 }
 
 // TODO: Handle issues in diagonal movement between two nearby obstacles, allowing the player to pass through.

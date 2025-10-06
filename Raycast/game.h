@@ -13,6 +13,8 @@ public:
 	Game();
 	~Game();
 
+	int screenWidth = 0;
+	int screenHeight = 0;
 	bool isRunning = false;
 	Player player;
 	std::vector<Obstacle*> obstacles;
