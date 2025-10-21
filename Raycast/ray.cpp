@@ -1,9 +1,13 @@
 #include "ray.h"
+#include "constants.h"
 #include <cmath>
 #include <iostream>
 
+constexpr float maxRayLen = 500.0f;
 
-Ray::Ray(float startX, float startY, float angle) {
+Ray::Ray(int rayNum, float startX, float startY, float angle) {
+	this->rayNum = rayNum;
+	this->wallX = (SCREEN_WIDTH / 2) + rayNum;
 	UpdatePosition(startX, startY, angle);
 }
 
@@ -12,16 +16,16 @@ void Ray::Update(std::vector<Obstacle*> obstacles) {
 }
 
 void Ray::UpdatePosition(float playerX, float playerY, float playerAngle) {
-	float maxLength = 500.0f;
-
 	this->x1 = playerX;
 	this->y1 = playerY;
 	this->angle = playerAngle;
-	this->x2 = playerX + maxLength * cos(angle);
-	this->y2 = playerY + maxLength * sin(angle);
+	this->x2 = playerX + maxRayLen * cos(angle);
+	this->y2 = playerY + maxRayLen * sin(angle);
 }
 
 void Ray::CheckCollision(std::vector<Obstacle*> obstacles) {
+	this->intersecting = false;
+
 	for (Obstacle* obstacle : obstacles) {
 		Vector4 obstacleTopLine = Vector4{ obstacle->rect.x, obstacle->rect.y, obstacle->rect.x + obstacle->rect.w, obstacle->rect.y };
 		Vector4 obstacleBotLine = Vector4{ obstacle->rect.x, obstacle->rect.y + obstacle->rect.h, obstacle->rect.x + obstacle->rect.w, obstacle->rect.y + obstacle->rect.h };
@@ -65,13 +69,31 @@ void Ray::CheckIntersection(Vector4 wall) {
 		float newDist = (xIntersect - x1) * (xIntersect - x1) + (yIntersect - y1) * (yIntersect - y1);
 
 		if (newDist < currDist) {
-			x2 = xIntersect;
-			y2 = yIntersect;
+			this->intersecting = true;
+			this->x2 = xIntersect;
+			this->y2 = yIntersect;
+			this->intersectDist = newDist;
 		}
 	}
 }
 
 void Ray::Render(SDL_Renderer* renderer) const {
 	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+	SDL_SetRenderColorScale(renderer, 1.0f);
 	SDL_RenderLine(renderer, x1, y1, x2, y2);
+
+	// Ray has intersected an obstacle. Draw wall.
+	if (this->intersecting) {
+		float maxX = this->x1 + maxRayLen * cos(this->angle);
+		float maxY = this->y1 + maxRayLen * sin(this->angle);
+		float maxDist = (maxX - this->x1) * (maxX - this->x1) + (maxY - this->y1) * (maxY - this->y1);
+		float distRatio = (this->intersectDist / maxDist);
+		float heightDiff = (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT / 2) * distRatio;
+		float wallY1 = (SCREEN_HEIGHT / 2) - heightDiff;
+		float wallY2 = (SCREEN_HEIGHT / 2) + heightDiff;
+
+		SDL_SetRenderDrawColor(renderer, wallColor.r, wallColor.g, wallColor.b, wallColor.a);
+		SDL_SetRenderColorScale(renderer, 1.0f - distRatio);
+		SDL_RenderLine(renderer, wallX, wallY1, wallX, wallY2);
+	}
 }

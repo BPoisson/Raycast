@@ -9,7 +9,7 @@ void Player::Init(int width) {
 	float startY = this->rect.y + this->rectDimension / 2;
 
 	for (int i = 0; i < screenWidth / 2; i++) {
-		rays.push_back(Ray(startX, startY, 0.0f));
+		rays.push_back(Ray(i + 1, startX, startY, 0.0f));
 	}
 }
 
@@ -113,6 +113,7 @@ void Player::UpdateRayAngle(float deltaTime) {
 
 void Player::Render(SDL_Renderer* renderer) const {
 	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+	SDL_SetRenderColorScale(renderer, 1.0f);
 	SDL_RenderFillRect(renderer, &rect);
 }
 
